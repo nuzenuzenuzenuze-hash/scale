@@ -1,8 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { signOut } from "@/lib/actions";
+
+interface SidebarProps {
+  userName: string;
+  userEmail: string;
+  userAvatar?: string;
+}
 
 const NAV_SECTIONS = [
   {
@@ -30,7 +38,7 @@ const NAV_SECTIONS = [
   },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ userName, userEmail, userAvatar }: SidebarProps) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -147,12 +155,40 @@ export default function Sidebar() {
               ${collapsed ? "justify-center" : ""}
             `}
           >
-            <div className="h-8 w-8 shrink-0 rounded-full bg-bg-elevated border border-border-subtle" />
-            {!collapsed && (
-              <div className="min-w-0">
-                <p className="truncate text-[13px] font-400 text-text-primary">Admin</p>
-                <p className="truncate text-[11px] text-text-muted">admin@nuze.com</p>
+            {userAvatar ? (
+              <Image
+                src={userAvatar}
+                alt={userName}
+                width={32}
+                height={32}
+                className="h-8 w-8 shrink-0 rounded-full"
+              />
+            ) : (
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-bg-elevated border border-border-subtle text-[11px] font-500 text-text-secondary uppercase">
+                {userName.charAt(0)}
               </div>
+            )}
+            {!collapsed && (
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[13px] font-400 text-text-primary">{userName}</p>
+                <p className="truncate text-[11px] text-text-muted">{userEmail}</p>
+              </div>
+            )}
+            {!collapsed && (
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  className="flex h-7 w-7 items-center justify-center rounded-[8px] text-text-muted hover:bg-[rgba(255,255,255,0.03)] hover:text-text-secondary"
+                  style={{ transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)" }}
+                  aria-label="Cerrar sesión"
+                >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M5 1H3C1.895 1 1 1.895 1 3V11C1 12.105 1.895 13 3 13H5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                    <path d="M10 4L13 7L10 10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M13 7H5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </form>
             )}
           </div>
         </div>
