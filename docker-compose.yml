@@ -5,15 +5,13 @@ services:
       dockerfile: Dockerfile
     container_name: scale-app
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:3000:3000"
-    env_file:
-      - .env
     environment:
       - NODE_ENV=production
+    env_file:
+      - .env
     networks:
-      - scale-network
+      - delegate_default
 
 networks:
-  scale-network:
-    driver: bridge
+  delegate_default:
+    external: true
